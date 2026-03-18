@@ -21,7 +21,13 @@ const startServer = async () => {
     console.log('✅ SQL Models synchronized.');
 
     const PORT = process.env.PORT;
-    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+    // At the end of server.js
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+module.exports = app; // This is CRITICAL for Vercel
   } catch (error) {
     console.error('❌ Unable to connect to the database:', error);
   }
