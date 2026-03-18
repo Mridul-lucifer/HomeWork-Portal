@@ -1,36 +1,34 @@
 const express = require('express');
 const sequelize = require('./src/config/db');
-const apiRoutes = require('./src/routes/api'); // The routes we built earlier
-const cors = require('cors')
+const apiRoutes = require('./src/routes/api');
+const cors = require('cors');
 
 const app = express();
+
+// Middleware
 app.use(express.json());
 app.use(cors());
 
 // Routes
 app.use('/api', apiRoutes);
 
-// Test Neon Connection and Sync Models
-const startServer = async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('✅ Connected to Neon PostgreSQL successfully.');
-    
-    // alter: true updates tables if you change the code models
-    await sequelize.sync({ alter: true });
-    console.log('✅ SQL Models synchronized.');
+// Root route for health check (helps debugging)
+app.get('/', (req, res) => res.send('School Mgmt API is running'));
 
-    const PORT = process.env.PORT;
-    // At the end of server.js
+// 1. Connection logic that doesn't block the export
+sequelize.authenticate()
+  .then(() => console.log('✅ DB Connected'))
+  .catch(err => console.error('❌ DB Connection Error:', err));
+
+// 2. Only call listen if NOT on Vercel (local development)
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  // Note: sequelize.sync({ alter: true }) is risky in prod; 
+  // better to run it once locally or via a script.
+  sequelize.sync({ alter: true }).then(() => {
+    app.listen(PORT, () => console.log(`🚀 Local server on port ${PORT}`));
+  });
 }
 
-module.exports = app; // This is CRITICAL for Vercel
-  } catch (error) {
-    console.error('❌ Unable to connect to the database:', error);
-  }
-};
-
-startServer();
+// 3. CRITICAL: Export for Vercel
+module.exports = app;
