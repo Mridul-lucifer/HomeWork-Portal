@@ -34,3 +34,27 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// --- NEW: Fetch Unique Classes ---
+exports.getClasses = async (req, res) => {
+  try {
+    // We use Sequelize's 'fn' to call DISTINCT on the classSection column
+    const classes = await User.findAll({
+      attributes: [
+        [User.sequelize.fn('DISTINCT', User.sequelize.col('class_section')), 'classSection']
+      ],
+      where: {
+        role: 'student' // Only show classes that have students assigned
+      },
+      order: [['classSection', 'ASC']] // Sort alphabetically (e.g., 1-A, 1-B, 2-A)
+    });
+
+    // Extract the strings from the object array: [{classSection: '10-A'}] -> ['10-A']
+    const classList = classes.map(item => item.classSection).filter(Boolean);
+
+    res.json(classList);
+  } catch (err) {
+    console.error("Error fetching classes:", err.message);
+    res.status(500).json({ error: "Could not fetch classes from database" });
+  }
+};

@@ -1,0 +1,62 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# --- Dependencies ---
+node_modules/
+.pnp
+.pnp.js
+
+# --- Expo & Build Artifacts ---
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# --- EAS Build (Important) ---
+# This ignores local EAS configuration that shouldn't be shared
+.eas/
+# If you use local credentials for EAS
+credentials.json
+
+# --- Metro & Cache ---
+.metro-health-check*
+.npm/
+.eslintcache
+
+# --- Environment Variables (CRITICAL) ---
+# You are using @env; never commit your actual secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# DO NOT ignore .env.example (use that to show other devs what keys are needed)
+
+# --- Debug & Logs ---
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+*.log
+
+# --- macOS / System ---
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+# --- TypeScript ---
+*.tsbuildinfo
+
+# --- Native Folders ---
+# Since you are using Prebuild/CNG (Continuous Native Generation), 
+# keep these ignored so they are generated fresh by EAS.
+/ios
+/android
+
+# --- Testing ---
+coverage/

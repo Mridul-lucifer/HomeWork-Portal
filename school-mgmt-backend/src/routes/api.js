@@ -10,6 +10,8 @@ router.post('/create-user', verifyToken, isAdmin, auth.register); // Only Admin 
 
 // Work Routes
 router.post('/upload-work', verifyToken, work.uploadWork); // Teachers use this
-router.get('/today', authenticate, work.getTodaysWork);     // Students use this
+router.get('/all-work', authenticate, work.getAllWork);     // Students use this
 
+// Add this line to your routes file
+router.get('/get-classes', verifyToken, auth.getClasses);
 module.exports = router;

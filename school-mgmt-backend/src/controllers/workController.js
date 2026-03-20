@@ -43,3 +43,28 @@ exports.getTodaysWork = async (req, res) => {
     res.status(500).json({ error: "Database query failed. Check if 'works' table exists." });
   }
 };
+exports.getAllWork = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, type } = req.query;
+    const offset = (page - 1) * limit;
+
+    // Use findAndCountAll to get both the data and total count for pagination
+    const { count, rows } = await Work.findAndCountAll({
+      where: { 
+        classSection: req.user.classSection,
+        type: type 
+      },
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+      order: [['createdAt', 'DESC']] // Show newest work first
+    });
+
+    res.json({
+      work: rows,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
