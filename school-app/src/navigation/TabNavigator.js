@@ -31,6 +31,7 @@ const TabNavigator = ({ route }) => {
           height: Platform.OS === 'ios' ? 88 : 65,
           paddingBottom: Platform.OS === 'ios' ? 30 : 10,
           paddingTop: 1,
+          marginBottom: 5,
           backgroundColor: '#ffffff',
           borderTopWidth: 1,
           borderTopColor: '#f1f5f9',
